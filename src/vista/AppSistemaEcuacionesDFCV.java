@@ -161,7 +161,7 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
     private void btnCalcularActionPerformed(ActionEvent evt) {
         double[][] coeficientes;
         double[] resultados;
-        String respuesta;
+        String respuesta, aux, signo;
         
         coeficientes = new double[n][n];
         resultados = new double[n];
@@ -172,11 +172,11 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
                 respuesta += "Ecuacion " + String.valueOf(i+1) + " → ";
                 for (int j = 0; j < n; j++) {
                     coeficientes[i][j] = Double.parseDouble(txtCoeficientes[i][j].getText());
-                    System.out.print(coeficientes[i][j] + " ");
-                    respuesta += coeficientes[i][j] + "*x" + String.valueOf(i+1) + " ";
+                    signo = (coeficientes[i][j] < 0) ? " " : "+ ";
+                    aux = (j < 1) ? coeficientes[i][j] + "*<strong>x" + String.valueOf(i+1) + "</strong> " : signo + coeficientes[i][j] + "*<strong>x" + String.valueOf(i+1) + "</strong> ";
+                    respuesta += aux;
                 }
                 resultados[i] = Double.parseDouble(txtResultado[i].getText());
-                System.out.println(resultados[i]);
                 respuesta += " = " + String.valueOf(resultados[i]) + "<br>";
             }
             
@@ -185,8 +185,7 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
             
             respuesta += "<br>Solución a las ecuaciones: <br>";
             for (int i = 0; i < n; i++) {
-                respuesta += "x" + (i + 1) + " = " + resultados[i] + "<br>";
-                System.out.println(resultados[i]);
+                respuesta += "<strong>x" + (i + 1) + "</strong> = " + resultados[i] + "<br>";
             }
             
             JOptionPane.showMessageDialog(this, respuesta);
