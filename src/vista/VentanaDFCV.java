@@ -21,8 +21,8 @@ public class VentanaDFCV extends javax.swing.JFrame {
      */
     public VentanaDFCV() {
         initComponents();
-        setResizable(false);
-        setLocationRelativeTo(null);
+        setResizable(false); // Se evita redimension de la ventana
+        setLocationRelativeTo(null); // Se posiciona en el centro de la pantalla
     }
 
     /**
@@ -50,8 +50,14 @@ public class VentanaDFCV extends javax.swing.JFrame {
         lNumEcuaciones.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lNumEcuaciones.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lNumEcuaciones.setText("Número de ecuaciones");
+        lNumEcuaciones.setPreferredSize(new java.awt.Dimension(130, 20));
 
-        btnIngresar.setText("Ingresar coeficientes");
+        txtNumEcuaciones.setPreferredSize(new java.awt.Dimension(10, 20));
+
+        btnIngresar.setText("Cargar matriz");
+        btnIngresar.setMaximumSize(new java.awt.Dimension(135, 25));
+        btnIngresar.setMinimumSize(new java.awt.Dimension(135, 25));
+        btnIngresar.setPreferredSize(new java.awt.Dimension(135, 25));
         btnIngresar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIngresarActionPerformed(evt);
@@ -59,7 +65,9 @@ public class VentanaDFCV extends javax.swing.JFrame {
         });
 
         btnSalir.setFont(new java.awt.Font("Tahoma", 3, 11)); // NOI18N
-        btnSalir.setText("Salir");
+        btnSalir.setForeground(new java.awt.Color(255, 0, 0));
+        btnSalir.setText("SALIR");
+        btnSalir.setPreferredSize(new java.awt.Dimension(60, 30));
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSalirActionPerformed(evt);
@@ -71,23 +79,20 @@ public class VentanaDFCV extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(125, 125, 125)
-                .addComponent(btnIngresar)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(35, 35, 35)
-                        .addComponent(lNumEcuaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtNumEcuaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 46, Short.MAX_VALUE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addComponent(lNumEcuaciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtNumEcuaciones, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(lTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -96,13 +101,13 @@ public class VentanaDFCV extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(lTitulo)
                 .addGap(35, 35, 35)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lNumEcuaciones)
-                    .addComponent(txtNumEcuaciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnIngresar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                .addComponent(btnSalir)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(txtNumEcuaciones, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                    .addComponent(lNumEcuaciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnIngresar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -110,23 +115,24 @@ public class VentanaDFCV extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        this.dispose();
+        this.dispose(); // Se cierra la ventana actual
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         try {
-            int n = parseInt(txtNumEcuaciones.getText());
-            if (n >= 2) {
-                setVisible(false);
-                AppSistemaEcuacionesDFCV app = new AppSistemaEcuacionesDFCV(this, n);
-                app.agregarComponentes();
+            int n = parseInt(txtNumEcuaciones.getText()); // Se captura el valor ingresado por el usuario
+            if (n >= 2) { // Se valida que el valor ingresado sea mayor o igual a 2
+                setVisible(false); // Se oculta la ventana actual
+                AppSistemaEcuacionesDFCV app = new AppSistemaEcuacionesDFCV(this, n); // Se realiza instancia de la segunda ventana
+                app.agregarComponentes(); // Se agregan los componentes a la segunda ventana
                 app.pack(); // make the GUI the minimum size needed to display the content
-                app.setVisible(true);
+                app.setVisible(true); // Se hace visible la segunda ventana
+                app.setLocationRelativeTo(null); // Se posiciona en el centro de la pantalla
             } else {
-                JOptionPane.showMessageDialog(null, "El número de ecuaciones debe ser mayor o igual a 2");
+                JOptionPane.showMessageDialog(null, "El número de ecuaciones debe ser mayor o igual a 2"); // Mensaje cuando el valor ingresado es incorrecto
             }
         } catch (NumberFormatException | HeadlessException e) {
-            JOptionPane.showMessageDialog(null, "Se presentó un error: " + e.getMessage());
+            JOptionPane.showMessageDialog(null, "Se presentó un error: " + e.getMessage()); // Se captura error
         }
     }//GEN-LAST:event_btnIngresarActionPerformed
 
@@ -158,11 +164,8 @@ public class VentanaDFCV extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new VentanaDFCV().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new VentanaDFCV().setVisible(true);
         });
     }
 

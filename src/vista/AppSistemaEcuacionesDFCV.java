@@ -6,6 +6,7 @@
 package vista;
 
 import java.awt.BorderLayout;
+import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -16,7 +17,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
 import logica.MetodoDeGaussJordan;
 
@@ -26,29 +30,28 @@ import logica.MetodoDeGaussJordan;
  */
 public class AppSistemaEcuacionesDFCV extends JFrame {
 
-    private final int n;
-    private final JFrame padre;
-
-    private final JPanel panelCoeficientes, panelBotones;
-
-    private final JTextField txtCoeficientes[][], txtResultado[];
-
-    private final JLabel lEcuaciones[], lVariables[], lIgual[];
-
-    private final JButton btnRegresar, btnCalcular;
+    private final int n; // Número de ecuaciones e incognitas
+    private final JFrame padre; // Frame de la primera ventana
+    private final JPanel panelCoeficientes, panelBotones; // Paneles para ingreso de coeficientes y para los botones
+    private final JTextField txtCoeficientes[][], txtResultado[]; // Campos de textos para la matriz de coeficientes
+    private final JLabel lEcuaciones[], lVariables[], lIgual[]; // Labels para indicar las variables y numero de ecuaciones
+    private final JButton btnRegresar, btnCalcular; // Botones para volver a la primera ventana y para resolver el sistema de ecuaciones
+    private final JScrollPane scroll; // Scroll para cuando la cantidad de incongnitas es muy grande
+    private JTextPane area;
+    private JScrollPane scroll2;
 
     public AppSistemaEcuacionesDFCV(JFrame padre, int n) {
         this.n = n;
         this.padre = padre;
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setTitle("Sistema de ecuaciones " + n + "x" + n);
-        setResizable(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // En caso de presionar el boton salir, se cierra toda la aplicación
+        setTitle("Sistema de ecuaciones " + this.n + "x" + this.n); // Titulo de la ventana
+        setResizable(true); // Se permite redimensionar la ventana
 
+        // Se valida cantidad de variables para determinar el tamaño de la ventana
         switch (this.n) {
             case 2:
-                setPreferredSize(new Dimension(200, 165));
+                setPreferredSize(new Dimension(200, 165)); 
                 break;
             case 3:
                 setPreferredSize(new Dimension(200, 190));
@@ -57,27 +60,29 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
                 break;
         }
 
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout()); // Se establece layout principal
 
         panelCoeficientes = new JPanel();
-        panelCoeficientes.setLayout(new GridLayout(n + 1, n + 2));
+        panelCoeficientes.setLayout(new GridLayout(this.n + 1, this.n + 2)); // Se establece layout para ingreso de coeficientes, n+1 filas, n+2 columnas
 
-        txtCoeficientes = new JTextField[n][n];
-        lEcuaciones = new JLabel[n];
-        lVariables = new JLabel[n];
-        lIgual = new JLabel[n + 1];
-        txtResultado = new JTextField[n];
+        txtCoeficientes = new JTextField[this.n][this.n];
+        lEcuaciones = new JLabel[this.n];
+        lVariables = new JLabel[this.n];
+        lIgual = new JLabel[this.n + 1];
+        txtResultado = new JTextField[this.n];
 
         panelBotones = new JPanel();
         btnRegresar = new JButton("Regresar");
         btnCalcular = new JButton("Calcular");
+        scroll = new JScrollPane(panelCoeficientes); // Se crea scrollbar con panel de coeficientes
     }
 
     public void agregarComponentes() {
-        panelCoeficientes.add(new JLabel(""));
-        add(panelCoeficientes, BorderLayout.NORTH);
+        panelCoeficientes.add(new JLabel("")); // Se agrega label vacio para primer posicion de la matriz del panel
+        getContentPane().add(scroll); // Se agrega panel scrollable
 
-        for (int i = 0; i < n; i++) {
+        // Se recorre matriz para indicar la variable de la columna
+        for (int i = 0; i < n; i++) { 
             lEcuaciones[i] = new JLabel("x" + (i + 1) + " ↓");
             lEcuaciones[i].setHorizontalAlignment(SwingConstants.CENTER);
             panelCoeficientes.add(lEcuaciones[i]);
@@ -86,20 +91,21 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
         panelCoeficientes.add(new JLabel("=", SwingConstants.CENTER));
         panelCoeficientes.add(new JLabel("b ↓", SwingConstants.CENTER));
 
+        // Se recorre matriz para ingreso de coeficientes
         for (int i = 0; i < n; i++) {
             lVariables[i] = new JLabel("E" + (i + 1) + "→", SwingConstants.CENTER);
             panelCoeficientes.add(lVariables[i]);
             for (int j = 0; j < n; j++) {
-                txtCoeficientes[i][j] = new JTextField("0");
+                txtCoeficientes[i][j] = new JTextField("0"); // Se inicializa el texto con valor de 0
                 txtCoeficientes[i][j].addFocusListener(new FocusListener() {
                     @Override
                     public void focusGained(FocusEvent e) {
-                        validarIngreso(e);
+                        validarIngreso(e); // Se valida evento de ingreso al campo de texto
                     }
 
                     @Override
                     public void focusLost(FocusEvent e) {
-                        validarSalida(e);
+                        validarSalida(e); // Se valida evento de ingreso al campo de texto
                     }
                 });
                 panelCoeficientes.add(txtCoeficientes[i][j]);
@@ -109,16 +115,16 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
                 panelCoeficientes.add(lIgual[i]);
             }
 
-            txtResultado[i] = new JTextField("0");
+            txtResultado[i] = new JTextField("0"); // Se inicializa el texto con valor de 0 para el resultado de cada ecuacion
             txtResultado[i].addFocusListener(new FocusListener() {
                 @Override
                 public void focusGained(FocusEvent e) {
-                    validarIngreso(e);
+                    validarIngreso(e); // Se valida evento de ingreso al campo de texto
                 }
 
                 @Override
                 public void focusLost(FocusEvent e) {
-                    validarSalida(e);
+                    validarSalida(e); // Se valida evento de ingreso al campo de texto
                 }
             });
             panelCoeficientes.add(txtResultado[i]);
@@ -127,15 +133,13 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
         panelBotones.add(btnRegresar);
         panelBotones.add(btnCalcular);
 
-        add(panelBotones, BorderLayout.SOUTH);
-        panelBotones.setLayout(new GridLayout(1, 2));
+        add(panelBotones, BorderLayout.SOUTH); // Se agrega panel de botones en la parte inferior de la ventsna
+        panelBotones.setLayout(new GridLayout(1, 2)); // Se crea layout para los botones, 1 fila, 2 columnas
 
-        btnRegresar.setPreferredSize(new Dimension(20, 40));
         btnRegresar.addActionListener((ActionEvent evt) -> {
             btnRegresarActionPerformed(evt);
         });
 
-        btnCalcular.setPreferredSize(new Dimension(20, 40));
         btnCalcular.addActionListener((ActionEvent evt) -> {
             btnCalcularActionPerformed(evt);
         });
@@ -159,8 +163,8 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
     }
 
     private void btnCalcularActionPerformed(ActionEvent evt) {
-        double[][] coeficientes;
-        double[] resultados;
+        double[][] coeficientes; // Matriz con los valores ingresados
+        double[] resultados; // Matriz con el resultado de cada ecuacion
         String respuesta, aux, signo;
         
         coeficientes = new double[n][n];
@@ -173,7 +177,7 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
                 for (int j = 0; j < n; j++) {
                     coeficientes[i][j] = Double.parseDouble(txtCoeficientes[i][j].getText());
                     signo = (coeficientes[i][j] < 0) ? " " : "+ ";
-                    aux = (j < 1) ? coeficientes[i][j] + "*<strong>x" + String.valueOf(i+1) + "</strong> " : signo + coeficientes[i][j] + "*<strong>x" + String.valueOf(i+1) + "</strong> ";
+                    aux = (j < 1) ? coeficientes[i][j] + "*<strong>x" + String.valueOf(j+1) + "</strong> " : signo + coeficientes[i][j] + "*<strong>x" + String.valueOf(j+1) + "</strong> ";
                     respuesta += aux;
                 }
                 resultados[i] = Double.parseDouble(txtResultado[i].getText());
@@ -188,9 +192,14 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
                 respuesta += "<strong>x" + (i + 1) + "</strong> = " + resultados[i] + "<br>";
             }
             
-            JOptionPane.showMessageDialog(this, respuesta);
+            area = new JTextPane();
+            area.setContentType("text/html");
+            area.setText(respuesta);
+            scroll2 = new JScrollPane(area);
+            
+            JOptionPane.showMessageDialog(this, scroll2); // Se muestra respuesta
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Se presentó un problema: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Se presentó un problema: " + e.getMessage()); // Se captura error
         }
     }
 }
