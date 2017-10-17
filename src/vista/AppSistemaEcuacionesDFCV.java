@@ -172,6 +172,9 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
         respuesta = "<html>Ecuaciones: <br>";
         
         try {
+            long inicio, fin;
+            inicio = System.currentTimeMillis();
+            
             for (int i = 0; i < this.n; i++) {
                 respuesta += "Ecuacion " + String.valueOf(i+1) + " → ";
                 for (int j = 0; j < this.n; j++) {
@@ -185,17 +188,15 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
             }
             
             MetodoDeGaussJordan metodo = new MetodoDeGaussJordan();
-            
-            long time_start, time_end;
-            time_start = System.currentTimeMillis();
             resultados = metodo.cargarMatriz(coeficientes, resultados);
-            time_end = System.currentTimeMillis();
-            System.out.println("La tarea tomó "+ ( time_end - time_start ) +" milisegundos");
             
             respuesta += "<br>Solución a las ecuaciones: <br>";
             for (int i = 0; i < this.n; i++) {
                 respuesta += "<strong>x" + (i + 1) + "</strong> = " + resultados[i] + "<br>";
             }
+            
+            fin = System.currentTimeMillis();
+            System.out.println("Con el sistema de ecuaciones " + this.n + "x" + this.n + " \nla tarea tomó "+ String.valueOf((double) fin - inicio ) +" milisegundos");
             
             area = new JTextPane();
             area.setContentType("text/html");
