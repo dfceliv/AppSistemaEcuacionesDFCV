@@ -6,9 +6,10 @@
 package vista;
 
 import java.awt.BorderLayout;
-import java.awt.ComponentOrientation;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -18,7 +19,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
@@ -82,7 +82,7 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
         getContentPane().add(scroll); // Se agrega panel scrollable
 
         // Se recorre matriz para indicar la variable de la columna
-        for (int i = 0; i < n; i++) { 
+        for (int i = 0; i < this.n; i++) { 
             lEcuaciones[i] = new JLabel("x" + (i + 1) + " ↓");
             lEcuaciones[i].setHorizontalAlignment(SwingConstants.CENTER);
             panelCoeficientes.add(lEcuaciones[i]);
@@ -92,10 +92,10 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
         panelCoeficientes.add(new JLabel("b ↓", SwingConstants.CENTER));
 
         // Se recorre matriz para ingreso de coeficientes
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < this.n; i++) {
             lVariables[i] = new JLabel("E" + (i + 1) + "→", SwingConstants.CENTER);
             panelCoeficientes.add(lVariables[i]);
-            for (int j = 0; j < n; j++) {
+            for (int j = 0; j < this.n; j++) {
                 txtCoeficientes[i][j] = new JTextField("0"); // Se inicializa el texto con valor de 0
                 txtCoeficientes[i][j].addFocusListener(new FocusListener() {
                     @Override
@@ -167,14 +167,14 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
         double[] resultados; // Matriz con el resultado de cada ecuacion
         String respuesta, aux, signo;
         
-        coeficientes = new double[n][n];
-        resultados = new double[n];
+        coeficientes = new double[this.n][this.n];
+        resultados = new double[this.n];
         respuesta = "<html>Ecuaciones: <br>";
         
         try {
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < this.n; i++) {
                 respuesta += "Ecuacion " + String.valueOf(i+1) + " → ";
-                for (int j = 0; j < n; j++) {
+                for (int j = 0; j < this.n; j++) {
                     coeficientes[i][j] = Double.parseDouble(txtCoeficientes[i][j].getText());
                     signo = (coeficientes[i][j] < 0) ? " " : "+ ";
                     aux = (j < 1) ? coeficientes[i][j] + "*<strong>x" + String.valueOf(j+1) + "</strong> " : signo + coeficientes[i][j] + "*<strong>x" + String.valueOf(j+1) + "</strong> ";
@@ -185,20 +185,29 @@ public class AppSistemaEcuacionesDFCV extends JFrame {
             }
             
             MetodoDeGaussJordan metodo = new MetodoDeGaussJordan();
+            
+            long time_start, time_end;
+            time_start = System.currentTimeMillis();
             resultados = metodo.cargarMatriz(coeficientes, resultados);
+            time_end = System.currentTimeMillis();
+            System.out.println("La tarea tomó "+ ( time_end - time_start ) +" milisegundos");
             
             respuesta += "<br>Solución a las ecuaciones: <br>";
-            for (int i = 0; i < n; i++) {
+            for (int i = 0; i < this.n; i++) {
                 respuesta += "<strong>x" + (i + 1) + "</strong> = " + resultados[i] + "<br>";
             }
             
             area = new JTextPane();
             area.setContentType("text/html");
             area.setText(respuesta);
+            area.setBackground(new Color(0,0,0,0));
             scroll2 = new JScrollPane(area);
             
-            JOptionPane.showMessageDialog(this, scroll2); // Se muestra respuesta
-        } catch (Exception e) {
+            JOptionPane.showConfirmDialog(null, scroll2,
+                "Sistema de ecuaciones " + this.n + "x" + this.n, 
+                JOptionPane.CLOSED_OPTION, 
+                JOptionPane.PLAIN_MESSAGE);
+        } catch (HeadlessException | NumberFormatException e) {
             JOptionPane.showMessageDialog(this, "Se presentó un problema: " + e.getMessage()); // Se captura error
         }
     }
